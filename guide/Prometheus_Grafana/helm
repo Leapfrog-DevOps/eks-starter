@@ -1,0 +1,61 @@
+## Define public Kubernetes chart repository in the Helm configuration
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+```
+## Update local repositories
+```
+helm repo update
+```
+## Search for newly installed repositories
+```
+helm repo list
+```
+## Create a namespace for Prometheus and Grafana resources
+```
+kubectl create ns prometheus
+```
+## Install Prometheus using HELM
+```
+helm install prometheus prometheus-community/kube-prometheus-stack -n prometheus
+```
+## Check all resources in Prometheus Namespace
+```
+kubectl get all -n prometheus
+```
+## check helm manifest
+```
+helm get manifest prometheus -n prometheus
+```
+## Port forward the Prometheus service
+```
+kubectl port-forward -n prometheus svc/prometheus-operated --address 0.0.0.0 9090:9090
+```
+## Get the Username
+```
+kubectl get secret -n prometheus prometheus-grafana -o=jsonpath='{.data.admin-user}' |base64 -d
+```
+## Get the Password
+```
+kubectl get secret -n prometheus prometheus-grafana -o=jsonpath='{.data.admin-password}' |base64 -d
+```
+## Port forward the Grafana service
+```
+kubectl port-forward -n prometheus svc/prometheus-grafana --address 0.0.0.0 3000:80
+
+To add smtp details:
+kubectl edit deploy prometheus-grafana -n prometheus
+Add environment variables:
+- name: GF_SMTP_ENABLED
+  value: "true"
+- name: GF_SMTP_HOST
+  value: email-smtp.us-east-1.amazonaws.com:465
+- name: GF_SMTP_PORT
+  value: "465"
+- name: GF_SMTP_USER
+  value: AKIA52BEGI3BHWJS5O5K
+- name: GF_SMTP_PASSWORD
+  value: BKPRipcZY2V1/oQwzZZzCK9zKqkzyDqeHUgPm3hQ8+45
+- name: GF_SMTP_FROM_ADDRESS
+  value: bibekmishra@lftechnology.com
+- name: GF_SMTP_FROM_NAME
+  value: admin

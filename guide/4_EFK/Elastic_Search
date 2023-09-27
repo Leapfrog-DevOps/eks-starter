@@ -1,0 +1,60 @@
+### Using an Init Container to set virtual memory
+## To add an init container that changes the host kernel setting before your Elasticsearch container starts, you can use the following example Elasticsearch spec:
+---
+cat <<EOF | kubectl apply -f -
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: quickstart
+spec:
+  version: 8.8.0
+  nodeSets:
+  - name: default
+    count: 3
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+EOF
+
+---
+
+### Monitor cluster health and creation progress
+$ kubectl get elasticsearch
+
+### One Pod is in the process of being started:
+$ kubectl get pods --selector='elasticsearch.k8s.elastic.co/cluster-name=quickstart'
+
+
+### Request Elasticsearch access
+## A ClusterIP Service is automatically created for your cluster:
+$ kubectl get service quickstart-es-http
+
+----------------------
+Username is elastic
+
+And password is :
+$ kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
+ Access the elasticsearch:
+
+kubectl port-forward service/quickstart-es-http --address 0.0.0.0 9200:9200
+
+---------------------------------
+Logging in to the elastic search
+
+kg secret
+
+PASSWORD=$(kubectl get secret elasticsearch-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
+
+echo $PASSWORD
+
+Browse the network load balancer DNS on port 9200
+ username  is : elastic
+Password : the one you extracted above.
+
+
+

@@ -1,0 +1,63 @@
+## HPA
+## docs: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+## https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+## Metric Server
+##docs: https://github.com/kubernetes-sigs/metrics-server#deployment
+
+# deploy metric_server
+# kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
+# get the yaml file of metric server
+# wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
+
+# example to apply php-apache
+
+# $ kubectl apply -f https://k8s.io/examples/application/php-apache.yaml
+
+### create hpa via kubectl command
+# $ kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+
+## yaml file for HPA
+
+apiVersion: autoscaling/v1
+
+
+kind: HorizontalPodAutoscaler
+
+
+metadata:
+
+
+  name: php-apache
+
+
+spec:
+
+
+  scaleTargetRef:
+
+
+    apiVersion: apps/v1
+
+
+    kind: Deployment
+
+
+    name: php-apache
+
+
+  minReplicas: 1
+
+
+  maxReplicas: 10
+
+
+  targetCPUUtilizationPercentage: 50
+
+
+# Run this in a separate terminal
+
+# so that the load generation continues and you can carry on with the rest of the steps
+
+    # $ kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+

@@ -1,0 +1,21 @@
+----------------------------------
+cat <<EOF | kubectl apply -f -
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  version: 8.8.0
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch
+EOF
+
+---
+kubectl get kibana
+
+kubectl get pod --selector='kibana.k8s.elastic.co/name=quickstart'
+
+kubectl port-forward service/quickstart-kb-http --address 0.0.0.0 5601:5601
+
+Login with same username and password as elasticsearch

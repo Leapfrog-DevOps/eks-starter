@@ -1,0 +1,73 @@
+### Configuring Cilium CNI
+
+
+## Install Helm - https://helm.sh/docs/intro/install/
+$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
+
+
+### Configuring Cilium - https://docs.cilium.io/en/stable/, https://docs.cilium.io/en/stable/installation/k8s-install-helm/#install-cilium
+
+$ helm repo add cilium https://helm.cilium.io/
+$ helm install cilium cilium/cilium --version 1.13.2 \
+ --namespace kube-system \
+ --set eni.enabled=true \
+ --set ipam.mode=eni \
+ --set egressMasqueradeInterfaces=eth0 \
+ --set tunnel=disabled \
+ --set nodeinit.enabled=true \
+ --set encryption.enabled=true \
+ --set encryption.type=wireguard \
+ --set hubble.relay.enabled=true \
+ --set hubble.listenAddress=":4244" \
+ --set hubble.ui.enabled=true \
+ --set l7Proxy=false \
+ --set kubeProxyReplacement=strict \
+ --set k8sServiceHost=F016F90BF76075ACD9503A60D41F5749.gr7.us-east-1.eks.amazonaws.com \
+ --set k8sServicePort=443 \
+
+#### arguments in detail 
+--set eni.enabled=true: This argument enables the use of Amazon Elastic Network Interfaces (ENIs) for pod networking.
+--set ipam.mode=eni: This argument sets the IP address management (IPAM) mode to ENI, which enables Cilium to use ENIs for pod networking.
+--set egressMasqueradeInterfaces=eth0: This argument specifies the network interface to be used for egress traffic masquerading. In this case, the interface is eth0.
+--set tunnel=disabled: This argument disables the use of tunnels for network traffic between nodes.
+--set nodeinit.enabled=true: This argument enables the Cilium Nodeinit daemonset, which sets up various network settings and creates a secure communication channel between nodes.
+--set encryption.enabled=true: This argument enables the encryption of pod-to-pod traffic using WireGuard.
+--set encryption.type=wireguard: This argument specifies the encryption protocol to be used for pod-to-pod traffic. In this case, the protocol is WireGuard.
+--set hubble.relay.enabled=true: This argument enables the Hubble Relay, a component that collects network traffic data from all nodes in the cluster.
+--set hubble.listenAddress=":4244": This argument specifies the network address where the Hubble Relay listens for incoming connections. In this case, the address is :4244.
+--set hubble.ui.enabled=true: This argument enables the Hubble UI, a web-based user interface for visualizing network traffic data.
+--set l7Proxy=false: This argument disables the use of an L7 proxy for network traffic.
+--set kubeProxyReplacement=strict: This argument enables strict enforcement of network policies at the application layer.
+--set k8sServiceHost=6075Agr7.us-east-2.eks.amazonaws.com: This argument specifies the Kubernetes API server hostname.
+--set k8sServicePort=443: This argument specifies the port number where the Kubernetes API server is listening. In this case, the port is 443.
+With successful installation, you will 
+
+### Delete aws-node daemon set from namespace kube-system
+
+kubectl -n kube-system delete daemonset aws-node
+
+## Create node-groups now with terraform
+
+
+## Install Cilium CLI Tool
+## https://docs.cilium.io/en/stable/installation/k8s-install-helm/#install-cilium
+
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
+CLI_ARCH=amd64
+if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+sha256sum --check cilium-linux-${CLI_ARCH}.tar.gz.sha256sum
+sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
+
+## check the status 
+
+cilium status –wait
+
+# connectivity test for cilium 
+
+cilium connectivity test
+
+

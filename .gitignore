@@ -1,0 +1,13 @@
+# Ignore Terraform files
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Ignore .terraform directories
+**/.terraform/*
+
+# Ignore PyCharm files
+.idea/
+*.pyc
+
+.terraform*
