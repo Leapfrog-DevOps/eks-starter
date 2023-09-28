@@ -6,26 +6,34 @@ $ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scr
 $ chmod 700 get_helm.sh
 $ ./get_helm.sh
 
+### Prerequisite
+##This step done before joining node in eks cluster 
+## Export your EKS kube config to your local or if using bastion do same step in bastion
+$ aws eks --region ap-south-1 update-kubeconfig --name <EKS_NAME>
+## We need to remove aws-node Daemonset from Cluster
+$ kubectl delete ds aws-node -n kube-system
 
 ### Configuring Cilium - https://docs.cilium.io/en/stable/, https://docs.cilium.io/en/stable/installation/k8s-install-helm/#install-cilium
 
 $ helm repo add cilium https://helm.cilium.io/
-$ helm install cilium cilium/cilium --version 1.13.2 \
+$ helm install cilium cilium/cilium --version 1.14.2 \
  --namespace kube-system \
  --set eni.enabled=true \
+ --set routingMode=native \
  --set ipam.mode=eni \
  --set egressMasqueradeInterfaces=eth0 \
- --set tunnel=disabled \
+ --set tunnel=enable \
  --set nodeinit.enabled=true \
  --set encryption.enabled=true \
  --set encryption.type=wireguard \
  --set hubble.relay.enabled=true \
- --set hubble.listenAddress=":4244" \
  --set hubble.ui.enabled=true \
- --set l7Proxy=false \
+ --set l7Proxy=true \
  --set kubeProxyReplacement=strict \
- --set k8sServiceHost=F016F90BF76075ACD9503A60D41F5749.gr7.us-east-1.eks.amazonaws.com \
- --set k8sServicePort=443 \
+ --set encryption.nodeEncryption=true \
+ --set operator.replicas=2 \
+ --set k8sServiceHost=C2A7FC74E08A0D0878EDA905E81A732E.gr7.us-east-1.eks.amazonaws.com \
+ --set k8sServicePort=443 
 
 #### arguments in detail 
 --set eni.enabled=true: This argument enables the use of Amazon Elastic Network Interfaces (ENIs) for pod networking.
