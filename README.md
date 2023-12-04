@@ -1,6 +1,7 @@
-[![LF Logo](https://www.lftechnology.com/images/lf-logo.svg)](https://www.lftechnology.com/)
+[<img src="./guide/atl.site.logo" alt="EKS Logo" width="200" height="50">](https://www.lftechnology.com/)
 
-# EKS Terraform Configuration
+
+# EKS Terraform Configuration [![AWS_logo](https://docs.aws.amazon.com/assets/r/images/aws_logo_dark.png)](https://aws.amazon.com/eks/)
 
 Welcome to the EKS Terraform Configuration repository! 🚀<br>
 This repository streamlines the deployment and management of Amazon Elastic Kubernetes Service (EKS) using Terraform.
