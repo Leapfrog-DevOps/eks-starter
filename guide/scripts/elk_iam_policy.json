@@ -1,0 +1,207 @@
+{
+  "version": "2012-10-17",
+  "statement": [
+    {
+      "effect": "allow",
+      "action": [
+        "iam:createservicelinkedrole",
+        "ec2:describeaccountattributes",
+        "ec2:describeaddresses",
+        "ec2:describeavailabilityzones",
+        "ec2:describeinternetgateways",
+        "ec2:describevpcs",
+        "ec2:describesubnets",
+        "ec2:describesecuritygroups",
+        "ec2:describeinstances",
+        "ec2:describenetworkinterfaces",
+        "ec2:describetags",
+        "ec2:getcoippoolusage",
+        "ec2:describecoippools",
+        "elasticloadbalancing:describeloadbalancers",
+        "elasticloadbalancing:describeloadbalancerattributes",
+        "elasticloadbalancing:describelisteners",
+        "elasticloadbalancing:describelistenercertificates",
+        "elasticloadbalancing:describesslpolicies",
+        "elasticloadbalancing:describerules",
+        "elasticloadbalancing:describetargetgroups",
+        "elasticloadbalancing:describetargetgroupattributes",
+        "elasticloadbalancing:describetargethealth",
+        "elasticloadbalancing:describetags"
+      ],
+      "resource": "*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "cognito-idp:describeuserpoolclient",
+        "acm:listcertificates",
+        "acm:describecertificate",
+        "iam:listservercertificates",
+        "iam:getservercertificate",
+        "waf-regional:getwebacl",
+        "waf-regional:getwebaclforresource",
+        "waf-regional:associatewebacl",
+        "waf-regional:disassociatewebacl",
+        "wafv2:getwebacl",
+        "wafv2:getwebaclforresource",
+        "wafv2:associatewebacl",
+        "wafv2:disassociatewebacl",
+        "shield:getsubscriptionstate",
+        "shield:describeprotection",
+        "shield:createprotection",
+        "shield:deleteprotection"
+      ],
+      "resource": "*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "ec2:authorizesecuritygroupingress",
+        "ec2:revokesecuritygroupingress"
+      ],
+      "resource": "*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "ec2:createsecuritygroup"
+      ],
+      "resource": "*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "ec2:createtags"
+      ],
+      "resource": "arn:aws:ec2:*:*:security-group/*",
+      "condition": {
+        "stringequals": {
+          "ec2:createaction": "createsecuritygroup"
+        },
+        "null": {
+          "aws:requesttag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "ec2:createtags",
+        "ec2:deletetags"
+      ],
+      "resource": "arn:aws:ec2:*:*:security-group/*",
+      "condition": {
+        "null": {
+          "aws:requesttag/elbv2.k8s.aws/cluster": "true",
+          "aws:resourcetag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "ec2:authorizesecuritygroupingress",
+        "ec2:revokesecuritygroupingress",
+        "ec2:deletesecuritygroup"
+      ],
+      "resource": "*",
+      "condition": {
+        "null": {
+          "aws:resourcetag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:createloadbalancer",
+        "elasticloadbalancing:createtargetgroup"
+      ],
+      "resource": "*",
+      "condition": {
+        "null": {
+          "aws:requesttag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:createlistener",
+        "elasticloadbalancing:deletelistener",
+        "elasticloadbalancing:createrule",
+        "elasticloadbalancing:deleterule"
+      ],
+      "resource": "*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:addtags",
+        "elasticloadbalancing:removetags"
+      ],
+      "resource": [
+        "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+        "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+        "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+      ],
+      "condition": {
+        "null": {
+          "aws:requesttag/elbv2.k8s.aws/cluster": "true",
+          "aws:resourcetag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:addtags",
+        "elasticloadbalancing:removetags"
+      ],
+      "resource": [
+        "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
+        "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
+        "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
+        "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
+      ]
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:modifyloadbalancerattributes",
+        "elasticloadbalancing:setipaddresstype",
+        "elasticloadbalancing:setsecuritygroups",
+        "elasticloadbalancing:setsubnets",
+        "elasticloadbalancing:deleteloadbalancer",
+        "elasticloadbalancing:modifytargetgroup",
+        "elasticloadbalancing:modifytargetgroupattributes",
+        "elasticloadbalancing:deletetargetgroup"
+      ],
+      "resource": "*",
+      "condition": {
+        "null": {
+          "aws:resourcetag/elbv2.k8s.aws/cluster": "false"
+        }
+      }
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:registertargets",
+        "elasticloadbalancing:deregistertargets"
+      ],
+      "resource": "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
+    },
+    {
+      "effect": "allow",
+      "action": [
+        "elasticloadbalancing:setwebacl",
+        "elasticloadbalancing:modifylistener",
+        "elasticloadbalancing:addlistenercertificates",
+        "elasticloadbalancing:removelistenercertificates",
+        "elasticloadbalancing:modifyrule"
+      ],
+      "resource": "*"
+    }
+  ]
+}

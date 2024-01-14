@@ -1,0 +1,35 @@
+name: Test Refactored Scripts
+
+env:
+  EKS_CLUSTER_NAME: "dummy-cluster"
+  SCRIPTS_DIR: "./guide/scripts/"
+
+on:
+  push:
+    branches: [feat/refactor-eks-scripts]
+
+jobs:
+  test-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Test in Bash
+      shell: bash
+      run: |
+        cd $SCRIPTS_DIR
+        chmod +x install_kubectl.sh install_eksctl.sh
+        ./install_eksctl.sh
+        EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME ./install_kubectl.sh
+
+    - name: Test in Zsh
+      shell: bash
+      run: |
+        cd $SCRIPTS_DIR
+        chmod +x install_kubectl.sh install_eksctl.sh
+        ./install_eksctl.sh
+        EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME ./install_kubectl.sh
+
