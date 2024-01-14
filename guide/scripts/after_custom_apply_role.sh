@@ -1,0 +1,9 @@
+#edit aws-auth
+kubectl edit -n kube-system configmap/aws-auth
+mapUsers: |
+  # map user IAM user Alice in 000000000000 to user "alice" in group "system:masters"
+  - userarn: arn:aws:iam::000000000000:user/Alice
+    username: bibek
+    groups:
+    - deployment-role
+
