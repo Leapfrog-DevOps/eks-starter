@@ -12,6 +12,7 @@ $ ./get_helm.sh
 $ aws eks --region ap-south-1 update-kubeconfig --name <EKS_NAME>
 ## We need to remove aws-node Daemonset from Cluster
 $ kubectl delete ds aws-node -n kube-system
+$ kubectl delete ds kube-proxy -n kube-system 
 
 ### Configuring Cilium - https://docs.cilium.io/en/stable/, https://docs.cilium.io/en/stable/installation/k8s-install-helm/#install-cilium
 
